@@ -28,6 +28,8 @@ public class ResourceFormat
     public static String SHORT_SMLJSON = "sml3";
     public static String SHORT_SMLXML = "sml2";
     public static String SHORT_HTML = "html";
+    private static String SHORT_GEO_JSON = "geo_json";
+    public static String SHORT_COTXML = "cot";
     
     public static ResourceFormat HTML = new ResourceFormat("text/html", SHORT_HTML);
     public static ResourceFormat JSON = new ResourceFormat("application/json", SHORT_JSON);
@@ -35,7 +37,13 @@ public class ResourceFormat
     
     public static ResourceFormat SML_JSON = new ResourceFormat("application/sml+json", SHORT_SMLJSON);
     public static ResourceFormat SML_XML = new ResourceFormat("application/sml+xml", SHORT_SMLXML);
-    
+
+    //BOW
+    public static ResourceFormat GEO_JSON = new ResourceFormat("application/geo+json", SHORT_GEO_JSON);
+
+    //BOW (again)
+    public static ResourceFormat COT_XML = new ResourceFormat("application/cot+xml", SHORT_COTXML);
+
     public static ResourceFormat OM_JSON = new ResourceFormat("application/om+json", SHORT_JSON);
     public static ResourceFormat OM_XML = new ResourceFormat("application/om+xml");
     
@@ -72,10 +80,14 @@ public class ResourceFormat
             return ResourceFormat.JSON;
         else if (SHORT_GEOJSON.equals(format))
             return ResourceFormat.GEOJSON;
+        else if (SHORT_GEO_JSON.equals(format))
+            return ResourceFormat.GEO_JSON;
         else if (SHORT_SMLJSON.equals(format))
             return ResourceFormat.SML_JSON;
         else if (SHORT_SMLXML.equals(format))
             return ResourceFormat.SML_XML;
+        else if (SHORT_COTXML.equals(format))
+            return ResourceFormat.COT_XML;
         else if (SHORT_HTML.equals(format))
             return ResourceFormat.HTML;
         else

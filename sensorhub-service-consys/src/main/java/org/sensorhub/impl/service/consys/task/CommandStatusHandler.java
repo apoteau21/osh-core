@@ -48,6 +48,8 @@ import org.sensorhub.impl.system.SystemDatabaseTransactionHandler;
 import org.sensorhub.utils.CallbackException;
 import org.vast.util.Asserts;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public class CommandStatusHandler extends BaseResourceHandler<BigId, ICommandStatus, CommandStatusFilter, ICommandStatusStore>
 {
@@ -195,6 +197,8 @@ public class CommandStatusHandler extends BaseResourceHandler<BigId, ICommandSta
                 {
                     subscription.cancel();
                     throw new CallbackException(e);
+                } catch (XMLStreamException e) {
+                    throw new RuntimeException(e);
                 }
             }
 

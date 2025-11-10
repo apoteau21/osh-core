@@ -217,7 +217,11 @@ public class SWECommonUtils
             formatList.add(ResourceFormat.SWE_TEXT.getMimeType());
             formatList.add(ResourceFormat.SWE_XML.getMimeType());
         }
-        
+
+        formatList.add(ResourceFormat.COT_XML.getMimeType());
+
+        formatList.add(ResourceFormat.GEO_JSON.getMimeType());
+
         formatList.add(ResourceFormat.SWE_BINARY.getMimeType());
         
         // also list compatible custom formats

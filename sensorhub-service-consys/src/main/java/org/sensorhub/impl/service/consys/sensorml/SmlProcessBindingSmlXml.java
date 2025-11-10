@@ -18,7 +18,12 @@ import java.io.IOException;
 import java.util.Collection;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.sensorhub.api.common.BigId;
 import org.sensorhub.api.common.IdEncoders;
+import org.sensorhub.api.data.IObsData;
 import org.sensorhub.api.datastore.feature.FeatureKey;
 import org.sensorhub.api.feature.ISmlFeature;
 import org.sensorhub.api.procedure.IProcedureWithDesc;
@@ -32,6 +37,9 @@ import org.sensorhub.impl.system.wrapper.SmlFeatureWrapper;
 import org.vast.sensorML.SMLStaxBindings;
 import net.opengis.sensorml.v20.AbstractProcess;
 import net.opengis.sensorml.v20.Deployment;
+import org.vast.swe.fast.CotDataWriter;
+import org.vast.swe.fast.XmlDataParser;
+import org.vast.swe.fast.XmlDataWriter;
 
 
 /**
@@ -66,6 +74,26 @@ public class SmlProcessBindingSmlXml<V extends ISmlFeature<?>> extends ResourceB
         {
             throw new IOException("Error initializing XML bindings", e);
         }
+    }
+
+    @Override
+    public V deserialize(XmlDataParser xmlReader) throws IOException {
+        return null;
+    }
+
+    @Override
+    public void serialize(FeatureKey key, V res, boolean showLinks, XmlDataWriter xmlWriter) throws IOException, XMLStreamException {
+
+    }
+
+    @Override
+    public V deserialize(XMLStreamReader xmlReader) throws IOException {
+        return null;
+    }
+
+    @Override
+    public void serialize(FeatureKey key, V res, boolean showLinks, XMLStreamWriter xmlWriter) throws IOException {
+
     }
 
 
@@ -145,10 +173,14 @@ public class SmlProcessBindingSmlXml<V extends ISmlFeature<?>> extends ResourceB
         }   
     }
 
+    @Override
+    public void serialize(BigId key, IObsData obs, boolean showLinks, CotDataWriter cotWriter) throws IOException, XMLStreamException {
+
+    }
+
 
     @Override
-    public void startCollection() throws IOException
-    {
+    public void startCollection() throws IOException {
         try
         {
             xmlWriter.writeStartElement("systems");

@@ -163,6 +163,7 @@ public class DataStreamBindingHtml extends ResourceBindingHtml<DataStreamKey, ID
                         each(SWECommonUtils.getAvailableFormats(dsInfo, customFormats), f -> {
                             var fUrl = URLEncoder.encode(f, StandardCharsets.UTF_8);
                             return div(
+                                    // blue links next to available obs formats
                                 span(f + ": "),
                                 a("Schema").withHref(dsUrl + "/schema?obsFormat=" + fUrl).withClass("small"),
                                 span(" - "),
@@ -177,6 +178,7 @@ public class DataStreamBindingHtml extends ResourceBindingHtml<DataStreamKey, ID
                 iff(isCollection,
                     getLinkButton("Details", assocs.getCanonicalLink(dsId).getHref())
                 ),
+                // blue buttons
                 getLinkButton("Parent System", assocs.getParentLink(dsInfo, ResourceFormat.HTML).getHref()),
                 getLinkButton("Observations", assocs.getObservationsLink(dsId, ResourceFormat.JSON).getHref()),
                 getLinkButton("Logical Schema (experimental)", dsUrl + "/schema?obsFormat=logical")

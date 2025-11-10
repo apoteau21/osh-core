@@ -34,6 +34,8 @@ import org.sensorhub.impl.service.consys.resource.ResourceLink;
 import org.sensorhub.impl.service.consys.system.SystemHandler;
 import org.vast.swe.SWEConstants;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public class CollectionHandler extends BaseHandler
 {
@@ -117,8 +119,7 @@ public class CollectionHandler extends BaseHandler
     
     
     @Override
-    public void doGet(RequestContext ctx) throws InvalidRequestException, IOException, SecurityException
-    {
+    public void doGet(RequestContext ctx) throws InvalidRequestException, IOException, SecurityException, XMLStreamException {
         // check permissions
         //ctx.getSecurityHandler().checkPermission(permissions.read);
         
@@ -183,8 +184,7 @@ public class CollectionHandler extends BaseHandler
     }
     
     
-    void list(RequestContext ctx) throws IOException
-    {
+    void list(RequestContext ctx) throws IOException, XMLStreamException {
         var binding = getBinding(ctx, false);
         binding.startCollection();
         

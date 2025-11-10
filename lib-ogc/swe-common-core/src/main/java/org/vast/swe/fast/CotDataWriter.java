@@ -14,31 +14,26 @@ Copyright (C) 2012-2015 Sensia Software LLC. All Rights Reserved.
 
 package org.vast.swe.fast;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import com.ctc.wstx.api.WstxOutputProperties;
+import com.google.gson.FormattingStyle;
+import com.google.gson.Strictness;
+import net.opengis.swe.v20.*;
+import net.opengis.swe.v20.Boolean;
 import org.vast.data.AbstractArrayImpl;
 import org.vast.data.XMLEncodingImpl;
 import org.vast.swe.SWEDataTypeUtils;
 import org.vast.util.DateTimeFormat;
 import org.vast.util.WriterException;
-import com.ctc.wstx.api.WstxOutputProperties;
-import net.opengis.swe.v20.Boolean;
-import net.opengis.swe.v20.Category;
-import net.opengis.swe.v20.Count;
-import net.opengis.swe.v20.DataArray;
-import net.opengis.swe.v20.DataBlock;
-import net.opengis.swe.v20.DataChoice;
-import net.opengis.swe.v20.DataRecord;
-import net.opengis.swe.v20.Quantity;
-import net.opengis.swe.v20.RangeComponent;
-import net.opengis.swe.v20.Text;
-import net.opengis.swe.v20.Time;
-import net.opengis.swe.v20.Vector;
+
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -48,22 +43,78 @@ import net.opengis.swe.v20.Vector;
  * while iterating through the component tree.
  * </p>
  *
- * @author Alex Robin
- * @since Dec 7, 2016
+ * @author Ashley Poteau
+ * @since Oct 31, 2025
  */
-public class XmlDataWriter extends AbstractDataWriter
+public class CotDataWriter extends XmlDataWriter
 {
-    static final String XML_ERROR = "Error writing XML stream for ";
+    static final String COT_ERROR = "Error writing XML stream for ";
     
     protected XMLStreamWriter xmlWriter;
     protected String namespace;
     protected String prefix;
     protected Map<String, IntegerWriter> countWriters = new HashMap<>();
+    private Strictness strictness = Strictness.LEGACY_STRICT;
+    private boolean serializeNulls = true;
+    private FormattingStyle formattingStyle;
+    // These fields cache data derived from the formatting style, to avoid having to
+    // re-evaluate it every time something is written
+    private String formattedColon;
+    private String formattedComma;
+    private boolean usesEmptyNewlineAndIndent;
+
 
 //    public XmlDataWriter(XMLStreamWriter xmlWriter) {
 //        super();
 //    }
 
+    public final void setStrictness(Strictness strictness) {
+        this.strictness = Objects.requireNonNull(strictness);
+    }
+
+    public final Strictness getStrictness() {
+        return strictness;
+    }
+
+    public final void setSerializeNulls(boolean serializeNulls) {
+
+        this.serializeNulls = serializeNulls;
+    }
+
+    /**
+     * Returns true if object members are serialized when their value is null. This has no impact on
+     * array elements. The default is true.
+     */
+    public final boolean getSerializeNulls() {
+        return serializeNulls;
+    }
+
+    public final void setFormattingStyle(FormattingStyle formattingStyle) {
+        this.formattingStyle = Objects.requireNonNull(formattingStyle);
+
+        this.formattedComma = ",";
+        if (this.formattingStyle.usesSpaceAfterSeparators()) {
+            this.formattedColon = ": ";
+
+            // Only add space if no newline is written
+            if (this.formattingStyle.getNewline().isEmpty()) {
+                this.formattedComma = ", ";
+            }
+        } else {
+            this.formattedColon = ":";
+        }
+
+        this.usesEmptyNewlineAndIndent =
+                this.formattingStyle.getNewline().isEmpty() && this.formattingStyle.getIndent().isEmpty();
+    }
+
+    public final void setIndent(String indent) {
+        if (indent.isEmpty()) {
+            setFormattingStyle(FormattingStyle.COMPACT);
+        } else {
+            setFormattingStyle(FormattingStyle.PRETTY.withIndent(indent));
+        }
+    }
 
     protected abstract class ValueWriter extends BaseProcessor
     {
@@ -87,7 +138,7 @@ public class XmlDataWriter extends AbstractDataWriter
             }
             catch (XMLStreamException e)
             {
-                throw new WriterException(XML_ERROR + eltName + " value", e);
+                throw new WriterException(COT_ERROR + eltName + " value", e);
             }
         }
     }
@@ -217,7 +268,7 @@ public class XmlDataWriter extends AbstractDataWriter
             }
             catch (XMLStreamException e)
             {
-                throw new WriterException(XML_ERROR + eltName + " record", e);
+                throw new WriterException(COT_ERROR + eltName + " record", e);
             }
         }
     }
@@ -249,7 +300,7 @@ public class XmlDataWriter extends AbstractDataWriter
             }
             catch (XMLStreamException e)
             {
-                throw new WriterException(XML_ERROR + eltName + " record", e);
+                throw new WriterException(COT_ERROR + eltName + " record", e);
             }
         }
     }
@@ -283,7 +334,7 @@ public class XmlDataWriter extends AbstractDataWriter
             }
             catch (XMLStreamException e)
             {
-                throw new WriterException(XML_ERROR + eltName + " choice", e);
+                throw new WriterException(COT_ERROR + eltName + " choice", e);
             }
         }
     }
@@ -320,11 +371,12 @@ public class XmlDataWriter extends AbstractDataWriter
             }
             catch (XMLStreamException e)
             {
-                throw new WriterException(XML_ERROR + eltName + " array", e);
+                throw new WriterException(COT_ERROR + eltName + " array", e);
             }
         }
     }
-    
+
+
     
     public void writeStartElement(String eltName) throws XMLStreamException
     {
@@ -549,4 +601,6 @@ public class XmlDataWriter extends AbstractDataWriter
         IntegerWriter sizeWriter = countWriters.get(refId);
         return () -> sizeWriter.val;
     }
+
+
 }

@@ -32,6 +32,8 @@ import org.sensorhub.impl.service.consys.resource.ResourceHandler;
 import org.sensorhub.impl.service.consys.resource.RequestContext.ResourceRef;
 import org.vast.util.Asserts;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public class DataStreamSchemaHandler extends ResourceHandler<DataStreamKey, IDataStreamInfo, DataStreamFilter, DataStreamFilter.Builder, IDataStreamStore>
 {
@@ -98,8 +100,7 @@ public class DataStreamSchemaHandler extends ResourceHandler<DataStreamKey, IDat
     
     
     @Override
-    public void doGet(RequestContext ctx) throws IOException
-    {
+    public void doGet(RequestContext ctx) throws IOException, XMLStreamException {
         if (ctx.isEndOfPath())
             getById(ctx, "");
         else
@@ -108,8 +109,7 @@ public class DataStreamSchemaHandler extends ResourceHandler<DataStreamKey, IDat
     
     
     @Override
-    protected void getById(final RequestContext ctx, final String id) throws IOException
-    {
+    protected void getById(final RequestContext ctx, final String id) throws IOException, XMLStreamException {
         // check permissions
         var parentId = ctx.getParentRef().id;
         ctx.getSecurityHandler().checkParentPermission(permissions.get, parentId);

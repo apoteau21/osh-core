@@ -19,6 +19,8 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+
+import net.opengis.swe.v20.DataComponent;
 import org.sensorhub.utils.VarInt;
 import org.vast.util.Asserts;
 import com.google.common.collect.ImmutableList;
@@ -241,4 +243,5 @@ public interface BigId extends Comparable<BigId>
             throw new IllegalStateException("Error encoding BigId: " + id, e);
         }
     }
+
 }

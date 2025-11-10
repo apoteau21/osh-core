@@ -19,6 +19,8 @@ import org.sensorhub.impl.service.consys.home.HomePageHandler;
 import org.sensorhub.impl.service.consys.resource.IResourceHandler;
 import org.sensorhub.impl.service.consys.resource.RequestContext;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public class RootHandler extends BaseHandler
 {
@@ -36,8 +38,7 @@ public class RootHandler extends BaseHandler
 
 
     @Override
-    public void doGet(RequestContext ctx) throws IOException
-    {
+    public void doGet(RequestContext ctx) throws IOException, XMLStreamException {
         IResourceHandler resource = ctx.isEndOfPath() ?
             homePage :
             getSubResource(ctx);

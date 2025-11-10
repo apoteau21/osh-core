@@ -17,6 +17,8 @@ package org.sensorhub.impl.service.consys.resource;
 import java.io.IOException;
 import org.sensorhub.impl.service.consys.InvalidRequestException;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public interface IResourceHandler
 {
@@ -24,7 +26,7 @@ public interface IResourceHandler
     String[] getNames();
     
     
-    void doGet(RequestContext ctx) throws InvalidRequestException, IOException, SecurityException;
+    void doGet(RequestContext ctx) throws InvalidRequestException, IOException, SecurityException, XMLStreamException;
 
 
     void doPost(RequestContext ctx) throws InvalidRequestException, IOException, SecurityException;

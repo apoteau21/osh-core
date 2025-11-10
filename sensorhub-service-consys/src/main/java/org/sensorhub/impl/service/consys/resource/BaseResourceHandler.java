@@ -39,6 +39,8 @@ import org.sensorhub.impl.service.consys.RestApiServlet.ResourcePermissions;
 import org.sensorhub.impl.service.consys.resource.RequestContext.ResourceRef;
 import org.vast.util.Asserts;
 
+import javax.xml.stream.XMLStreamException;
+
 
 /**
  * <p>
@@ -77,7 +79,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
     }
     
     
-    protected abstract ResourceBinding<K, V> getBinding(RequestContext ctx, boolean forReading) throws IOException;
+    protected abstract ResourceBinding<K, V> getBinding(RequestContext ctx, boolean forReading) throws IOException, XMLStreamException;
     protected abstract K getKey(final RequestContext ctx, final String id) throws InvalidRequestException;
     protected abstract String encodeKey(final RequestContext ctx, K key);
     protected abstract F getFilter(final ResourceRef parent, final Map<String, String[]> queryParams, long offset, long limit) throws InvalidRequestException;
@@ -86,8 +88,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
         
     
     @Override
-    public void doGet(final RequestContext ctx) throws IOException
-    {
+    public void doGet(final RequestContext ctx) throws IOException, XMLStreamException {
         // if requesting from this resource collection
         if (ctx.isEndOfPath())
         {
@@ -201,8 +202,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
     }
     
     
-    protected void getById(final RequestContext ctx, final String id) throws IOException
-    {
+    protected void getById(final RequestContext ctx, final String id) throws IOException, XMLStreamException {
         // check permissions
         ctx.getSecurityHandler().checkResourcePermission(permissions.get, id);
         
@@ -215,8 +215,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
     }
     
     
-    protected void getByKey(final RequestContext ctx, K key) throws IOException
-    {
+    protected void getByKey(final RequestContext ctx, K key) throws IOException, XMLStreamException {
         // fetch from data store
         final V res = dataStore.get(key);
         if (res != null)
@@ -237,8 +236,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
     }
     
     
-    protected void list(final RequestContext ctx) throws IOException
-    {
+    protected void list(final RequestContext ctx) throws IOException, XMLStreamException {
         // check permissions
         var parentId = ctx.getParentRef().id;
         ctx.getSecurityHandler().checkParentPermission(permissions.list, parentId);
@@ -345,7 +343,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
                 if (!dataStore.isReadOnly())
                     dataStore.commit();
             }
-            catch (DataStoreException e)
+            catch (DataStoreException | XMLStreamException e)
             {
                 throw ServiceErrors.requestRejected("Ingest Error: " + e.getMessage());
             }
@@ -397,7 +395,7 @@ public abstract class BaseResourceHandler<K, V, F extends IQueryFilter, S extend
             
             validate(res);
         }
-        catch (ResourceParseException e)
+        catch (ResourceParseException | XMLStreamException e)
         {
             throw ServiceErrors.invalidPayload("Invalid payload: " + e.getMessage());
         }

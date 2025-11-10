@@ -20,6 +20,8 @@ import org.sensorhub.api.common.IdEncoders;
 import org.sensorhub.impl.common.IdEncodersBase32;
 import org.vast.util.Asserts;
 
+import javax.xml.stream.XMLStreamException;
+
 
 /**
  * <p>
@@ -49,8 +51,8 @@ public abstract class ResourceBinding<K, V>
     
     
     public abstract V deserialize() throws IOException;
-    public abstract void serialize(K key, V res, boolean showLinks) throws IOException;
-    public abstract void startCollection() throws IOException;
+    public abstract void serialize(K key, V res, boolean showLinks) throws IOException, XMLStreamException;
+    public abstract void startCollection() throws IOException, XMLStreamException;
     public abstract void endCollection(Collection<ResourceLink> links) throws IOException;
     
     

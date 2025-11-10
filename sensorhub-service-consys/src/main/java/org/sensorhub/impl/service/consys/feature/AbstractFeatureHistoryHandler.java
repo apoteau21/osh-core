@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vast.ogc.gml.IFeature;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public abstract class AbstractFeatureHistoryHandler<
         V extends IFeature,
@@ -70,8 +72,7 @@ public abstract class AbstractFeatureHistoryHandler<
     
     
     @Override
-    protected void getById(final RequestContext ctx, final String id) throws IOException
-    {
+    protected void getById(final RequestContext ctx, final String id) throws IOException, XMLStreamException {
         // check permissions
         var parentId = ctx.getParentRef().id;
         ctx.getSecurityHandler().checkParentPermission(permissions.get, parentId);

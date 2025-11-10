@@ -37,6 +37,8 @@ import org.sensorhub.impl.service.consys.resource.ResourceFormat;
 import org.sensorhub.impl.service.consys.resource.RequestContext.ResourceRef;
 import org.sensorhub.impl.system.DataStreamTransactionHandler;
 
+import javax.xml.stream.XMLStreamException;
+
 
 public class ObsStatsHandler extends BaseHandler
 {
@@ -76,8 +78,7 @@ public class ObsStatsHandler extends BaseHandler
     
     
     @Override
-    public void doGet(final RequestContext ctx) throws IOException
-    {
+    public void doGet(final RequestContext ctx) throws IOException, XMLStreamException {
         // check permissions
         var parentId = ctx.getParentRef().id;
         ctx.getSecurityHandler().checkParentPermission(permissions.get, parentId);
